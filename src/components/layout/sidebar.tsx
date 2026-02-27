@@ -1,3 +1,5 @@
+"use client";
+
 import Link from 'next/link';
 import { Home, LineChart, Users, Settings, Activity, Snowflake } from 'lucide-react';
 import { useSnow } from '@/components/providers/snow-provider';
