@@ -1,11 +1,20 @@
 "use client";
 
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { Home, LineChart, Users, Settings, Activity, Snowflake } from 'lucide-react';
 import { useSnow } from '@/components/providers/snow-provider';
 
 export function Sidebar() {
   const { isSnowing, toggleSnow } = useSnow();
+  const pathname = usePathname();
+
+  const navLinks = [
+    { name: 'Overview', href: '/dashboard', icon: Home },
+    { name: 'Recoveries', href: '/dashboard/recoveries', icon: LineChart },
+    { name: 'Customers', href: '/dashboard/customers', icon: Users },
+    { name: 'Settings', href: '/dashboard/settings', icon: Settings },
+  ];
 
   return (
     <div className="flex h-screen w-64 flex-col border-r border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 justify-between transition-colors">
@@ -18,34 +27,25 @@ export function Sidebar() {
       </div>
       <div className="flex-1 overflow-auto py-4">
         <nav className="grid items-start px-2 text-sm font-medium gap-1">
-          <Link
-            href="/dashboard"
-            className="flex items-center gap-3 rounded-lg bg-indigo-50 dark:bg-zinc-800/50 text-indigo-700 dark:text-zinc-100 px-3 py-2.5 transition-all font-semibold"
-          >
-            <Home className="h-4 w-4" />
-            Overview
-          </Link>
-          <Link
-            href="/dashboard/recoveries"
-            className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-zinc-600 dark:text-zinc-400 transition-all hover:bg-zinc-100 dark:hover:bg-zinc-900 hover:text-zinc-900 dark:hover:text-zinc-100"
-          >
-            <LineChart className="h-4 w-4" />
-            Recoveries
-          </Link>
-          <Link
-            href="/dashboard/customers"
-            className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-zinc-600 dark:text-zinc-400 transition-all hover:bg-zinc-100 dark:hover:bg-zinc-900 hover:text-zinc-900 dark:hover:text-zinc-100"
-          >
-            <Users className="h-4 w-4" />
-            Customers
-          </Link>
-          <Link
-            href="/dashboard/settings"
-            className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-zinc-600 dark:text-zinc-400 transition-all hover:bg-zinc-100 dark:hover:bg-zinc-900 hover:text-zinc-900 dark:hover:text-zinc-100"
-          >
-            <Settings className="h-4 w-4" />
-            Settings
-          </Link>
+          {navLinks.map((link) => {
+            const isActive = pathname === link.href;
+            const Icon = link.icon;
+            
+            return (
+              <Link
+                key={link.name}
+                href={link.href}
+                className={`flex items-center gap-3 rounded-lg px-3 py-2.5 transition-all ${
+                  isActive
+                    ? 'bg-indigo-50 dark:bg-zinc-800/50 text-indigo-700 dark:text-zinc-100 font-semibold'
+                    : 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-900 hover:text-zinc-900 dark:hover:text-zinc-100'
+                }`}
+              >
+                <Icon className="h-4 w-4" />
+                {link.name}
+              </Link>
+            )
+          })}
         </nav>
       </div>
       </div>
