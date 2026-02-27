@@ -51,7 +51,7 @@ export default function Home() {
             </Button>
           </div>
           
-          <div className="mt-20 grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-5xl text-left">
+          <div id="features" className="mt-20 scroll-mt-24 grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-5xl text-left">
             <div className="group flex flex-col items-start p-6 bg-white rounded-2xl shadow-sm border border-slate-100 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-indigo-100 cursor-default">
               <div className="p-3 bg-green-100 text-green-700 rounded-lg mb-4 transition-transform duration-300 group-hover:scale-110">
                 <DollarSign className="h-6 w-6" />
@@ -72,6 +72,38 @@ export default function Home() {
               </div>
               <h3 className="text-xl font-bold mb-2 transition-colors duration-300 group-hover:text-indigo-600">Smart Dunning</h3>
               <p className="text-slate-600">Optimized retry schedules and personalized emails that your customers actually read.</p>
+            </div>
+          </div>
+          
+          <div id="pricing" className="mt-32 scroll-mt-24 w-full max-w-5xl">
+            <h2 className="text-3xl font-bold text-slate-900 mb-12">Simple, transparent pricing.</h2>
+            <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 flex flex-col md:flex-row items-center justify-between mx-auto max-w-3xl">
+              <div className="text-left mb-6 md:mb-0">
+                <h3 className="text-2xl font-bold mb-2">Performance Built</h3>
+                <p className="text-slate-600">No monthly fees. We only win when you win.</p>
+              </div>
+              <div className="text-center md:text-right">
+                <span className="text-5xl font-extrabold text-indigo-600">5%</span>
+                <span className="text-slate-500 font-medium ml-2">of recovered revenue</span>
+              </div>
+            </div>
+          </div>
+
+          <div id="testimonials" className="mt-32 scroll-mt-24 w-full max-w-5xl mb-12">
+            <h2 className="text-3xl font-bold text-slate-900 mb-12">Loved by founders.</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 text-left">
+                <div className="flex text-yellow-400 mb-4">★★★★★</div>
+                <p className="text-slate-700 italic mb-6">"Retain.io essentially pays for itself. Setting it up took 2 minutes and it recovered $1,200 in our first week alone that would have completely churned out."</p>
+                <div className="font-bold text-slate-900">Sarah J.</div>
+                <div className="text-sm text-slate-500">Founder, SaaS Co.</div>
+              </div>
+              <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 text-left">
+                <div className="flex text-yellow-400 mb-4">★★★★★</div>
+                <p className="text-slate-700 italic mb-6">"The Stripe integration is flawless. We used to do all of this manually and missed so many failed payments. The automated emails look incredibly professional."</p>
+                <div className="font-bold text-slate-900">David M.</div>
+                <div className="text-sm text-slate-500">CTO, Tech Startup</div>
+              </div>
             </div>
           </div>
         </section>
