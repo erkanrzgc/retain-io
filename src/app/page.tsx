@@ -44,7 +44,7 @@ export default function Home() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto relative z-10">
             <Link href="/dashboard">
-              <Button size="lg" className="w-full sm:w-auto h-14 px-8 text-base bg-indigo-600 hover:bg-indigo-700 text-white rounded-full shadow-lg shadow-indigo-200">
+              <Button size="lg" className="w-full sm:w-auto h-14 px-8 text-base bg-indigo-600 hover:bg-indigo-700 text-white rounded-full">
                 Start Recovering Revenue <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </Link>
