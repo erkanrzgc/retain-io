@@ -52,25 +52,25 @@ export default function Home() {
           </div>
           
           <div className="mt-20 grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-5xl text-left">
-            <div className="flex flex-col items-start p-6 bg-white rounded-2xl shadow-sm border border-slate-100">
-              <div className="p-3 bg-green-100 text-green-700 rounded-lg mb-4">
+            <div className="group flex flex-col items-start p-6 bg-white rounded-2xl shadow-sm border border-slate-100 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-indigo-100 cursor-default">
+              <div className="p-3 bg-green-100 text-green-700 rounded-lg mb-4 transition-transform duration-300 group-hover:scale-110">
                 <DollarSign className="h-6 w-6" />
               </div>
-              <h3 className="text-xl font-bold mb-2">High ROI</h3>
+              <h3 className="text-xl font-bold mb-2 transition-colors duration-300 group-hover:text-indigo-600">High ROI</h3>
               <p className="text-slate-600">You only pay a fraction of the revenue we successfully recover for you.</p>
             </div>
-            <div className="flex flex-col items-start p-6 bg-white rounded-2xl shadow-sm border border-slate-100">
-              <div className="p-3 bg-blue-100 text-blue-700 rounded-lg mb-4">
+            <div className="group flex flex-col items-start p-6 bg-white rounded-2xl shadow-sm border border-slate-100 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-indigo-100 cursor-default">
+              <div className="p-3 bg-blue-100 text-blue-700 rounded-lg mb-4 transition-transform duration-300 group-hover:scale-110">
                 <Zap className="h-6 w-6" />
               </div>
-              <h3 className="text-xl font-bold mb-2">1-Click Setup</h3>
+              <h3 className="text-xl font-bold mb-2 transition-colors duration-300 group-hover:text-indigo-600">1-Click Setup</h3>
               <p className="text-slate-600">Connect your Stripe account in seconds. We handle the rest automatically.</p>
             </div>
-            <div className="flex flex-col items-start p-6 bg-white rounded-2xl shadow-sm border border-slate-100">
-              <div className="p-3 bg-purple-100 text-purple-700 rounded-lg mb-4">
+            <div className="group flex flex-col items-start p-6 bg-white rounded-2xl shadow-sm border border-slate-100 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-indigo-100 cursor-default">
+              <div className="p-3 bg-purple-100 text-purple-700 rounded-lg mb-4 transition-transform duration-300 group-hover:scale-110">
                 <ShieldCheck className="h-6 w-6" />
               </div>
-              <h3 className="text-xl font-bold mb-2">Smart Dunning</h3>
+              <h3 className="text-xl font-bold mb-2 transition-colors duration-300 group-hover:text-indigo-600">Smart Dunning</h3>
               <p className="text-slate-600">Optimized retry schedules and personalized emails that your customers actually read.</p>
             </div>
           </div>
@@ -82,12 +82,12 @@ export default function Home() {
           <div className="flex items-center gap-2 mb-4 md:mb-0">
             <Activity className="h-5 w-5 text-indigo-600" />
             <span className="font-semibold text-slate-900">Retain.io</span>
-            <span>© 2026. All rights reserved.</span>
+            <span>© {new Date().getFullYear()}. All rights reserved.</span>
           </div>
           <div className="flex gap-6">
-            <Link href="#" className="hover:text-slate-900">Privacy</Link>
-            <Link href="#" className="hover:text-slate-900">Terms</Link>
-            <Link href="#" className="hover:text-slate-900">Contact</Link>
+            <Link href="/privacy" className="hover:text-indigo-600 transition-colors">Privacy Policy</Link>
+            <Link href="/terms" className="hover:text-indigo-600 transition-colors">Terms of Service</Link>
+            <Link href="mailto:hello@retain.io" className="hover:text-indigo-600 transition-colors">Contact Us</Link>
           </div>
         </div>
       </footer>
