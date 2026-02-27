@@ -48,7 +48,7 @@ function LoginContent() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 dark:bg-zinc-900 transition-colors duration-300 py-12 px-4 sm:px-6 lg:px-8 relative">
+    <div className="flex min-h-screen items-center justify-center bg-background text-foreground transition-colors duration-300 py-12 px-4 sm:px-6 lg:px-8 relative">
       <div className="absolute top-6 left-6 right-6 flex justify-between items-center z-10 w-full max-w-7xl mx-auto">
         <Link href="/" className="flex items-center gap-2">
           <Activity className="h-6 w-6 text-indigo-600 dark:text-indigo-400" />
@@ -183,7 +183,7 @@ function LoginContent() {
 
 export default function LoginPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-zinc-50"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div></div>}>
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-background text-foreground"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div></div>}>
       <LoginContent />
     </Suspense>
   );

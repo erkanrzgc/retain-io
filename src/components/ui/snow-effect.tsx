@@ -13,8 +13,8 @@ export function SnowEffect() {
       id: i,
       left: Math.random() * 100, // random left position 0-100%
       animationDuration: Math.random() * 5 + 4, // slower random duration 4-9s
-      opacity: Math.random() * 0.4 + 0.1, // very low opacity 0.1-0.5
-      size: Math.random() * 6 + 6, // very small random font size 6-12px
+      opacity: Math.random() * 0.5 + 0.4, // higher opacity 0.4-0.9 for whiter flakes
+      size: Math.random() * 4 + 4, // extremely small font size 4-8px
     }));
     setFlakes(newFlakes);
   }, []);
@@ -42,10 +42,10 @@ export function SnowEffect() {
         __html: `
         @keyframes snowfall {
           0% {
-            transform: translateY(-10px) translateX(0);
+            transform: translateY(-10px) translateX(0) rotate(0deg);
           }
           100% {
-            transform: translateY(100vh) translateX(20px);
+            transform: translateY(100vh) translateX(20px) rotate(360deg);
           }
         }
       `}} />
