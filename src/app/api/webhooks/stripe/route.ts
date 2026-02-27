@@ -6,12 +6,7 @@ import Stripe from 'stripe';
 
 const prisma = new PrismaClient();
 
-// This tells Next.js not to parse the body as JSON so Stripe can verify the raw signature
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
+
 
 export async function POST(req: Request) {
   const bodyText = await req.text();
