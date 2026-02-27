@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Bell } from 'lucide-react';
 import { UserNav } from '@/components/layout/user-nav';
+import { ModeToggle } from '@/components/ui/mode-toggle';
 
 export function Header() {
   return (
@@ -12,6 +13,7 @@ export function Header() {
         <Bell className="h-4 w-4" />
         <span className="sr-only">Toggle notifications</span>
       </Button>
+      <ModeToggle />
       <UserNav />
     </header>
   );
