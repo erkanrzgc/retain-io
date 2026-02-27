@@ -1,36 +1,79 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Retain.io - Smart Revenue Recovery SaaS 🚀
 
-## Getting Started
+Retain.io is a specialized B2B SaaS platform designed to help digital businesses recover lost revenue from failed subscriptions. By connecting securely with Stripe, Retain.io automatically detects failed payments, generates secure customer-facing recovery portals, and dispatches automated dunning emails to win back lost subscriptions silently in the background.
 
-First, run the development server:
+## 🌟 Key Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **Stripe Connect Integration:** Seamlessly onboard business owners using secure Stripe OAuth.
+- **Intelligent Webhooks:** Real-time detection of `invoice.payment_failed` and `invoice.payment_succeeded` events across all connected accounts.
+- **Automated Dunning Campaigns:** Integrates with Resend to automatically dispatch actionable, conversion-optimized recovery emails to end-customers.
+- **Secure Recovery Portal:** A dedicated, brand-agnostic React checkout flow utilizing Stripe Elements to securely capture updated payment methods without requiring customer login.
+- **Owner Analytics Dashboard:** A clean, data-driven dashboard tracking "Recovered Revenue," "Active Dunning Instances," and "Recovery Rates" powered by Next.js and Tailwind CSS.
+- **Authentication & Security:** NextAuth integrated for secure platform access.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🛠️ Tech Stack
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Framework:** Next.js 15 (App Router)
+- **Styling & UI:** Tailwind CSS, Shadcn UI
+- **Database:** PostgreSQL (Neon) via Prisma ORM
+- **Payment Engine:** Stripe Node.js SDK, Stripe Elements
+- **Email Deliverability:** Resend
+- **Authentication:** NextAuth.js
+- **Deployment:** Vercel
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🚀 Getting Started (Local Development)
 
-## Learn More
+### Prerequisites
 
-To learn more about Next.js, take a look at the following resources:
+- Node.js (v18+)
+- A Stripe Developer Account
+- A Resend API Key
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Installation
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1.  **Clone the repository:**
 
-## Deploy on Vercel
+    ```bash
+    git clone https://github.com/erkanrzgc/retain-io.git
+    cd retain-io
+    ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+2.  **Install dependencies:**
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+    ```bash
+    npm install
+    ```
+
+3.  **Environment Setup:**
+    Rename `.env.example` to `.env` (or create a `.env` file) and populate the required API keys:
+
+    ```env
+    DATABASE_URL="postgresql://..." # Your Neon/Postgres connection string
+    NEXTAUTH_URL="http://localhost:3000"
+    NEXTAUTH_SECRET="..."
+    STRIPE_CLIENT_ID="..."
+    STRIPE_SECRET_KEY="..."
+    STRIPE_WEBHOOK_SECRET="..."
+    NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY="..."
+    RESEND_API_KEY="..."
+    ```
+
+4.  **Database Migration:**
+
+    ```bash
+    npx prisma db push
+    ```
+
+5.  **Run the application:**
+    ```bash
+    npm run dev
+    ```
+    Visit `http://localhost:3000` to preview the platform.
+
+## 🔐 Architecture
+
+Retain.io operates strictly on delegated access. It does not store actual credit card data. All payment processing and sensitive customer data tokenization are handled securely by Stripe's PCI-compliant infrastructure.
+
+---
+
+_Built as an MVP for automated revenue recovery._
