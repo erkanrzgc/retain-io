@@ -22,45 +22,54 @@ export default async function DashboardPage() {
 
   const isStripeConnected = !!user?.stripeConnectId;
 
-  // --- Prisma Real Data Queries ---
-  // 1. Recovered Revenue (Sum of 'RECOVERED' status)
-  const recoveredResult = await prisma.recovery.aggregate({
-    _sum: { amount: true },
-    where: {
-      userId: session.user.id,
-      status: 'RECOVERED'
-    }
-  });
+  // --- Prisma Real Data Queries (Parallelized for Speed) ---
+  const [
+    recoveredResult,
+    totalRecoveries,
+    successfulRecoveries,
+    activeDunning,
+    emailsSentResult,
+    recentRecoveries
+  ] = await Promise.all([
+    // 1. Recovered Revenue
+    prisma.recovery.aggregate({
+      _sum: { amount: true },
+      where: { userId: session.user.id, status: 'RECOVERED' }
+    }),
+    
+    // 2a. Total Recoveries (for rate)
+    prisma.recovery.count({
+      where: { userId: session.user.id }
+    }),
+    
+    // 2b. Successful Recoveries (for rate)
+    prisma.recovery.count({
+      where: { userId: session.user.id, status: 'RECOVERED' }
+    }),
+    
+    // 3. Active Dunning
+    prisma.recovery.count({
+      where: { userId: session.user.id, status: 'PENDING' }
+    }),
+    
+    // 4. Emails Sent
+    prisma.recovery.aggregate({
+      _sum: { emailsSent: true },
+      where: { userId: session.user.id }
+    }),
+    
+    // 5. Recent Recoveries List
+    prisma.recovery.findMany({
+      where: { userId: session.user.id, status: 'RECOVERED' },
+      orderBy: { updatedAt: 'desc' },
+      take: 5,
+      include: { customer: true }
+    })
+  ]);
+
   const recoveredRevenue = (recoveredResult._sum.amount || 0) / 100;
-
-  // 2. Recovery Rate calculation
-  const totalRecoveries = await prisma.recovery.count({
-     where: { userId: session.user.id }
-  });
-  const successfulRecoveries = await prisma.recovery.count({
-    where: { userId: session.user.id, status: 'RECOVERED' }
-  });
   const recoveryRate = totalRecoveries > 0 ? Math.round((successfulRecoveries / totalRecoveries) * 100) : 0;
-
-  // 3. Active Dunning (PENDING recoveries)
-  const activeDunning = await prisma.recovery.count({
-    where: { userId: session.user.id, status: 'PENDING' }
-  });
-
-  // 4. Emails Sent
-  const emailsSentResult = await prisma.recovery.aggregate({
-    _sum: { emailsSent: true },
-    where: { userId: session.user.id }
-  });
   const totalEmailsSent = emailsSentResult._sum.emailsSent || 0;
-
-  // 5. Recent Recoveries List
-  const recentRecoveries = await prisma.recovery.findMany({
-    where: { userId: session.user.id, status: 'RECOVERED' },
-    orderBy: { updatedAt: 'desc' },
-    take: 5,
-    include: { customer: true }
-  });
   // -------------------------------
 
   return (
