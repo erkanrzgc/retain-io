@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Activity, ArrowRight, ShieldCheck, Zap, DollarSign } from "lucide-react";
+import { ModeToggle } from "@/components/ui/mode-toggle";
 
 export default function Home() {
   return (
@@ -16,6 +17,7 @@ export default function Home() {
           <Link href="#testimonials" className="hover:text-slate-900 transition-colors">Wall of Love</Link>
         </nav>
         <div className="flex items-center gap-4 relative z-10">
+          <ModeToggle />
           <Link href="/login" className="hidden text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-50 md:block">
             Sign In
           </Link>
