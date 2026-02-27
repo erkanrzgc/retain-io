@@ -48,11 +48,11 @@ function LoginContent() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-slate-50 dark:bg-slate-900 transition-colors duration-300 py-12 px-4 sm:px-6 lg:px-8 relative">
+    <div className="flex min-h-screen items-center justify-center bg-zinc-50 dark:bg-zinc-900 transition-colors duration-300 py-12 px-4 sm:px-6 lg:px-8 relative">
       <div className="absolute top-6 left-6 right-6 flex justify-between items-center z-10 w-full max-w-7xl mx-auto">
         <Link href="/" className="flex items-center gap-2">
           <Activity className="h-6 w-6 text-indigo-600 dark:text-indigo-400" />
-          <span className="font-bold text-slate-900 dark:text-slate-50">Retain.io</span>
+          <span className="font-bold text-zinc-900 dark:text-zinc-50">Retain.io</span>
         </Link>
         <div className="mr-12">
           <ModeToggle />
@@ -62,10 +62,10 @@ function LoginContent() {
       <div className="w-full max-w-md space-y-8 mt-10">
         <div className="flex flex-col items-center justify-center text-center">
           <Activity className="h-12 w-12 text-indigo-600 dark:text-indigo-400 mb-4" />
-          <h2 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-50">
+          <h2 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
             Welcome to Retain.io
           </h2>
-          <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
+          <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-300">
             Sign in to your account to recover lost revenue
           </p>
         </div>
@@ -83,7 +83,7 @@ function LoginContent() {
                 <input
                   type="email"
                   placeholder="name@company.com"
-                  className="flex h-10 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 disabled:cursor-not-allowed disabled:opacity-50"
+                  className="flex h-10 w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-zinc-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 disabled:cursor-not-allowed disabled:opacity-50"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   disabled={isLoading !== false}
@@ -92,11 +92,11 @@ function LoginContent() {
               </div>
               <Button
                 type="submit"
-                className="w-full bg-slate-900 text-white hover:bg-slate-800"
+                className="w-full bg-zinc-900 text-white hover:bg-zinc-800"
                 disabled={isLoading !== false || !email}
               >
                 {isLoading === 'email' ? (
-                  <div className="h-5 w-5 animate-spin rounded-full border-b-2 border-slate-400"></div>
+                  <div className="h-5 w-5 animate-spin rounded-full border-b-2 border-zinc-400"></div>
                 ) : (
                   "Sign in with Email"
                 )}
@@ -105,10 +105,10 @@ function LoginContent() {
             
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t border-slate-200" />
+                <span className="w-full border-t border-zinc-200" />
               </div>
               <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-white px-2 text-slate-500">Or continue with</span>
+                <span className="bg-white px-2 text-zinc-500">Or continue with</span>
               </div>
             </div>
 
@@ -120,7 +120,7 @@ function LoginContent() {
                 disabled={isLoading !== false}
               >
                 {isLoading === 'google' ? (
-                  <div className="h-5 w-5 animate-spin rounded-full border-b-2 border-slate-800"></div>
+                  <div className="h-5 w-5 animate-spin rounded-full border-b-2 border-zinc-800"></div>
                 ) : (
                   <svg
                     className="h-5 w-5"
@@ -148,7 +148,7 @@ function LoginContent() {
                 disabled={isLoading !== false}
               >
                 {isLoading === 'github' ? (
-                  <div className="h-5 w-5 animate-spin rounded-full border-b-2 border-slate-800"></div>
+                  <div className="h-5 w-5 animate-spin rounded-full border-b-2 border-zinc-800"></div>
                 ) : (
                   <svg 
                     className="h-5 w-5" 
@@ -165,7 +165,7 @@ function LoginContent() {
 
             <Button
               variant="ghost"
-              className="w-full text-slate-500 hover:text-slate-900 text-xs mt-2"
+              className="w-full text-zinc-500 hover:text-zinc-900 text-xs mt-2"
               onClick={() => {
                 setIsLoading('credentials');
                 signIn("credentials", { callbackUrl }).finally(() => setIsLoading(false));
@@ -183,7 +183,7 @@ function LoginContent() {
 
 export default function LoginPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-slate-50"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div></div>}>
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-zinc-50"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div></div>}>
       <LoginContent />
     </Suspense>
   );

@@ -84,10 +84,10 @@ export function CheckoutForm({ amount, currency }: { amount: number, currency: s
 
   return (
     <form id="payment-form" onSubmit={handleSubmit} className="w-full">
-      <div className="mb-6 pb-6 border-b border-slate-200">
-        <h2 className="text-xl font-semibold text-slate-900 mb-2">Update Payment Method</h2>
-        <p className="text-slate-500 text-sm">
-          Please provide a valid card to complete your pending payment of <span className="font-semibold text-slate-800">{displayAmount}</span>.
+      <div className="mb-6 pb-6 border-b border-zinc-200">
+        <h2 className="text-xl font-semibold text-zinc-900 mb-2">Update Payment Method</h2>
+        <p className="text-zinc-500 text-sm">
+          Please provide a valid card to complete your pending payment of <span className="font-semibold text-zinc-800">{displayAmount}</span>.
         </p>
       </div>
 

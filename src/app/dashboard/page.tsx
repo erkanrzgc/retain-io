@@ -187,12 +187,12 @@ export default async function DashboardPage() {
                   </Button>
                 </div>
               ) : (
-                <div className="rounded-md border border-dashed border-slate-300 bg-white p-6 flex flex-col items-center justify-center text-center shadow-sm">
+                <div className="rounded-md border border-dashed border-zinc-300 bg-white p-6 flex flex-col items-center justify-center text-center shadow-sm">
                   <div className="rounded-full bg-[#635BFF]/10 p-3 mb-4">
                     <DollarSign className="h-6 w-6 text-[#635BFF]" />
                   </div>
-                  <h3 className="font-semibold text-slate-900 mb-2 text-lg">Connect Your Stripe</h3>
-                  <p className="text-sm text-slate-500 mb-6 leading-relaxed">
+                  <h3 className="font-semibold text-zinc-900 mb-2 text-lg">Connect Your Stripe</h3>
+                  <p className="text-sm text-zinc-500 mb-6 leading-relaxed">
                     We securely connect to your Stripe account to detect failed payments and send smart recovery emails on your behalf.
                   </p>
                   <Link href="/api/stripe/connect" className="w-full">

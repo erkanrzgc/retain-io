@@ -17,8 +17,8 @@ export default function SettingsPage() {
             Manage your account details and billing.
           </CardDescription>
         </CardHeader>
-        <CardContent className="flex flex-col items-center justify-center h-[400px] text-slate-500">
-          <Settings className="h-16 w-16 mb-4 text-slate-300" />
+        <CardContent className="flex flex-col items-center justify-center h-[400px] text-zinc-500">
+          <Settings className="h-16 w-16 mb-4 text-zinc-300" />
           <p>Settings panel is under construction.</p>
         </CardContent>
       </Card>

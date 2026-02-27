@@ -17,8 +17,8 @@ export default function RecoveriesPage() {
             You have no active recovery campaigns at the moment. Connect your Stripe account to start tracking failed payments.
           </CardDescription>
         </CardHeader>
-        <CardContent className="flex flex-col items-center justify-center h-[400px] text-slate-500">
-          <Activity className="h-16 w-16 mb-4 text-slate-300" />
+        <CardContent className="flex flex-col items-center justify-center h-[400px] text-zinc-500">
+          <Activity className="h-16 w-16 mb-4 text-zinc-300" />
           <p>This page will display detailed analytics about your automated dunning emails and the revenue they recover.</p>
         </CardContent>
       </Card>

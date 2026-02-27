@@ -17,8 +17,8 @@ export default function CustomersPage() {
             A list of customers who currently have failed payments and are in the dunning process.
           </CardDescription>
         </CardHeader>
-        <CardContent className="flex flex-col items-center justify-center h-[400px] text-slate-500">
-          <Users className="h-16 w-16 mb-4 text-slate-300" />
+        <CardContent className="flex flex-col items-center justify-center h-[400px] text-zinc-500">
+          <Users className="h-16 w-16 mb-4 text-zinc-300" />
           <p>No customers are currently at risk. Your dashboard is clear.</p>
         </CardContent>
       </Card>
