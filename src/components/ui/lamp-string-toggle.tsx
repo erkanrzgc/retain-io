@@ -26,8 +26,9 @@ export function LampStringToggle() {
   };
 
   return (
-    <div className="fixed top-0 right-10 md:right-32 z-50 flex flex-col items-center group">
-      {/* Lamp Wire/Base */}
+    <div className="fixed top-0 left-10 md:left-32 z-[100] flex flex-col items-center group pointer-events-none">
+      <div className="pointer-events-auto flex flex-col items-center">
+        {/* Lamp Wire/Base */}
       <div className="w-1.5 bg-slate-800 dark:bg-slate-950 h-16 shadow-inner"></div>
       
       {/* Lamp Shade & Bulb Container */}
@@ -68,9 +69,11 @@ export function LampStringToggle() {
         </div>
       </div>
       
+      </div>
+      
       {/* Large Glow Effect (Illuminating the room) */}
       {theme === 'light' && (
-        <div className="absolute top-24 w-96 h-96 bg-yellow-200/10 blur-[100px] rounded-full pointer-events-none"></div>
+        <div className="absolute top-24 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-yellow-400/5 blur-[120px] rounded-full pointer-events-none z-[-1]"></div>
       )}
     </div>
   );

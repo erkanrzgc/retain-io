@@ -1,12 +1,10 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Activity, ArrowRight, ShieldCheck, Zap, DollarSign } from "lucide-react";
-import { LampStringToggle } from "@/components/ui/lamp-string-toggle";
 
 export default function Home() {
   return (
     <div className="flex min-h-screen flex-col bg-slate-50 dark:bg-slate-900 transition-colors duration-300">
-      <LampStringToggle />
       <header className="container mx-auto flex h-20 items-center justify-between px-4 md:px-6">
         <div className="flex items-center gap-2">
           <Activity className="h-8 w-8 text-indigo-600 dark:text-indigo-400" />

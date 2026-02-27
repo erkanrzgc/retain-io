@@ -4,6 +4,7 @@ import "./globals.css";
 import { AuthProvider } from "@/components/providers/auth-provider";
 import { SnowProvider } from "@/components/providers/snow-provider";
 import { ThemeProvider } from "@/components/providers/theme-provider";
+import { LampStringToggle } from "@/components/ui/lamp-string-toggle";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,9 +31,10 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-50`}
       >
-        <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} disableTransitionOnChange>
           <AuthProvider>
             <SnowProvider>
+              <LampStringToggle />
               {children}
             </SnowProvider>
           </AuthProvider>
