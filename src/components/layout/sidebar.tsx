@@ -1,10 +1,14 @@
 import Link from 'next/link';
-import { Home, LineChart, Users, Settings, Activity } from 'lucide-react';
+import { Home, LineChart, Users, Settings, Activity, Snowflake } from 'lucide-react';
+import { useSnow } from '@/components/providers/snow-provider';
 
 export function Sidebar() {
+  const { isSnowing, toggleSnow } = useSnow();
+
   return (
-    <div className="flex h-screen w-64 flex-col border-r bg-slate-900 text-slate-100">
-      <div className="flex h-14 items-center border-b border-slate-800 px-4">
+    <div className="flex h-screen w-64 flex-col border-r bg-slate-900 text-slate-100 justify-between">
+      <div>
+        <div className="flex h-14 items-center border-b border-slate-800 px-4">
         <Link href="/dashboard" className="flex items-center gap-2 font-semibold">
           <Activity className="h-6 w-6 text-indigo-500" />
           <span className="text-xl">Retain.io</span>
@@ -41,6 +45,21 @@ export function Sidebar() {
             Settings
           </Link>
         </nav>
+      </div>
+      </div>
+      
+      <div className="p-4 border-t border-slate-800">
+        <button
+          onClick={toggleSnow}
+          className={`flex w-full items-center gap-3 rounded-lg px-3 py-2 transition-all ${
+            isSnowing 
+              ? 'bg-indigo-600 text-white hover:bg-indigo-700' 
+              : 'text-slate-400 hover:bg-slate-800 hover:text-slate-100'
+          }`}
+        >
+          <Snowflake className={`h-4 w-4 ${isSnowing ? 'animate-pulse' : ''}`} />
+          Let it Snow
+        </button>
       </div>
     </div>
   );
