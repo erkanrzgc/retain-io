@@ -5,19 +5,19 @@ import { usePathname } from 'next/navigation';
 import { Home, LineChart, Users, Settings, Activity, Snowflake } from 'lucide-react';
 import { useSnow } from '@/components/providers/snow-provider';
 
+export const navLinks = [
+  { name: 'Overview', href: '/dashboard', icon: Home },
+  { name: 'Recoveries', href: '/dashboard/recoveries', icon: LineChart },
+  { name: 'Customers', href: '/dashboard/customers', icon: Users },
+  { name: 'Settings', href: '/dashboard/settings', icon: Settings },
+];
+
 export function Sidebar() {
   const { isSnowing, toggleSnow } = useSnow();
   const pathname = usePathname();
 
-  const navLinks = [
-    { name: 'Overview', href: '/dashboard', icon: Home },
-    { name: 'Recoveries', href: '/dashboard/recoveries', icon: LineChart },
-    { name: 'Customers', href: '/dashboard/customers', icon: Users },
-    { name: 'Settings', href: '/dashboard/settings', icon: Settings },
-  ];
-
   return (
-    <div className="flex h-screen w-64 flex-col border-r border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 justify-between transition-colors">
+    <div className="hidden md:flex h-screen w-64 flex-col border-r border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 justify-between transition-colors">
       <div>
         <div className="flex h-14 items-center border-b border-zinc-200 dark:border-zinc-800 px-4">
         <Link href="/dashboard" className="flex items-center gap-2 font-semibold">
