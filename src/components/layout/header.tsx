@@ -5,7 +5,7 @@ import { ModeToggle } from '@/components/ui/mode-toggle';
 
 export function Header() {
   return (
-    <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-6 lg:h-[60px]">
+    <header className="flex h-14 items-center gap-4 border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 px-6 transition-colors">
       <div className="w-full flex-1">
         {/* We can put a search bar here later */}
       </div>
