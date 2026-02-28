@@ -21,13 +21,6 @@ export default async function Home() {
         </nav>
         <div className="flex items-center gap-4 relative z-10">
           <ModeToggle />
-          {!session ? (
-            <Link href="/login">
-              <Button variant="outline" className="hidden border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 md:block rounded-full px-6">
-                Sign In
-              </Button>
-            </Link>
-          ) : null}
           <Link href={session ? "/dashboard" : "/login"}>
             <Button className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-full px-6 shadow-md transition-all">
               {session ? "Go to Dashboard" : "Sign In"}
