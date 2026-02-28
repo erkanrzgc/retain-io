@@ -2,8 +2,11 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Activity, ArrowRight, ShieldCheck, Zap, DollarSign } from "lucide-react";
 import { ModeToggle } from "@/components/ui/mode-toggle";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/lib/auth/options";
 
-export default function Home() {
+export default async function Home() {
+  const session = await getServerSession(authOptions);
   return (
     <div className="flex min-h-screen flex-col bg-zinc-50 dark:bg-zinc-900 transition-colors duration-300">
       <header className="container mx-auto flex h-20 items-center justify-between px-4 md:px-6">
@@ -18,12 +21,16 @@ export default function Home() {
         </nav>
         <div className="flex items-center gap-4 relative z-10">
           <ModeToggle />
-          <Link href="/login" className="hidden text-sm font-medium text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-zinc-50 md:block">
-            Sign In
-          </Link>
-          <Link href="/dashboard">
-            <Button className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-full px-6">
-              Go to Dashboard
+          {!session ? (
+            <Link href="/login">
+              <Button variant="outline" className="hidden border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 md:block rounded-full px-6">
+                Sign In
+              </Button>
+            </Link>
+          ) : null}
+          <Link href={session ? "/dashboard" : "/login"}>
+            <Button className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-full px-6 shadow-md transition-all">
+              {session ? "Go to Dashboard" : "Sign In"}
             </Button>
           </Link>
         </div>
