@@ -12,6 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { signOut, useSession } from "next-auth/react";
+import Link from "next/link";
 
 export function UserNav() {
   const { data: session } = useSession();
@@ -49,9 +50,15 @@ export function UserNav() {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem>Profile</DropdownMenuItem>
-          <DropdownMenuItem>Billing</DropdownMenuItem>
-          <DropdownMenuItem>Settings</DropdownMenuItem>
+          <Link href="/dashboard/settings">
+            <DropdownMenuItem className="cursor-pointer">Profile</DropdownMenuItem>
+          </Link>
+          <Link href="/dashboard/settings">
+            <DropdownMenuItem className="cursor-pointer">Billing</DropdownMenuItem>
+          </Link>
+          <Link href="/dashboard/settings">
+            <DropdownMenuItem className="cursor-pointer">Settings</DropdownMenuItem>
+          </Link>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => signOut({ callbackUrl: "/" })}>
