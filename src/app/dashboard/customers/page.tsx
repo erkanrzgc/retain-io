@@ -1,11 +1,10 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
 import { Users, AlertTriangle, UserCheck } from "lucide-react";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth/options";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
+import { CustomersTable } from "@/components/dashboard/customers-table";
 
 export default async function CustomersPage() {
   const session = await getServerSession(authOptions);
@@ -25,6 +24,15 @@ export default async function CustomersPage() {
   const atRiskCustomers = customers.filter(
     (c) => c.recoveries.some((r) => r.status === "PENDING")
   ).length;
+
+  // Serialize for client component
+  const serializedCustomers = customers.map((c) => ({
+    id: c.id,
+    name: c.name,
+    email: c.email,
+    stripeCustomerId: c.stripeCustomerId,
+    recoveries: c.recoveries.map((r) => ({ status: r.status, amount: r.amount })),
+  }));
 
   return (
     <div className="flex flex-col gap-6">
@@ -59,12 +67,12 @@ export default async function CustomersPage() {
         </Card>
       </div>
 
-      {/* Customer Table */}
+      {/* Customer Table with Search */}
       <Card>
         <CardHeader>
           <CardTitle>All Customers</CardTitle>
           <CardDescription>
-            Customers whose payments have been flagged for recovery.
+            Search through customers whose payments have been flagged for recovery.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -77,62 +85,7 @@ export default async function CustomersPage() {
               </p>
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Customer</TableHead>
-                    <TableHead className="hidden sm:table-cell">Stripe ID</TableHead>
-                    <TableHead>Recoveries</TableHead>
-                    <TableHead>Total Value</TableHead>
-                    <TableHead className="text-right">Status</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {customers.map((customer) => {
-                    const totalValue = customer.recoveries.reduce((sum, r) => sum + r.amount, 0) / 100;
-                    const hasPending = customer.recoveries.some((r) => r.status === "PENDING");
-                    const recoveredCount = customer.recoveries.filter((r) => r.status === "RECOVERED").length;
-
-                    return (
-                      <TableRow key={customer.id}>
-                        <TableCell>
-                          <div className="font-medium">{customer.name || "Unknown"}</div>
-                          <div className="text-xs text-muted-foreground">{customer.email}</div>
-                        </TableCell>
-                        <TableCell className="hidden sm:table-cell">
-                          <span className="text-xs text-muted-foreground font-mono">
-                            ...{customer.stripeCustomerId.slice(-8)}
-                          </span>
-                        </TableCell>
-                        <TableCell>
-                          <span className="font-semibold">{customer.recoveries.length}</span>
-                          {recoveredCount > 0 && (
-                            <span className="text-xs text-emerald-600 dark:text-emerald-400 ml-1">
-                              ({recoveredCount} recovered)
-                            </span>
-                          )}
-                        </TableCell>
-                        <TableCell className="font-semibold">
-                          ${totalValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                        </TableCell>
-                        <TableCell className="text-right">
-                          {hasPending ? (
-                            <Badge className="bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 hover:bg-amber-100 border-0">
-                              At Risk
-                            </Badge>
-                          ) : (
-                            <Badge className="bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 hover:bg-emerald-100 border-0">
-                              Healthy
-                            </Badge>
-                          )}
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-                </TableBody>
-              </Table>
-            </div>
+            <CustomersTable customers={serializedCustomers} />
           )}
         </CardContent>
       </Card>

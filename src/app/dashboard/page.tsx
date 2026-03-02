@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { DollarSign, Activity, Users, ArrowUpRight, CheckCircle2 } from 'lucide-react';
+import { DollarSign, Activity, Users, ArrowUpRight, CheckCircle2, Clock, Mail, TrendingUp, AlertTriangle } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { getServerSession } from "next-auth/next";
@@ -22,67 +23,78 @@ export default async function DashboardPage() {
 
   const isStripeConnected = !!user?.stripeConnectId;
 
-  // --- Prisma Real Data Queries (Parallelized for Speed) ---
   const [
     recoveredResult,
     totalRecoveries,
     successfulRecoveries,
     activeDunning,
+    failedRecoveries,
     emailsSentResult,
-    recentRecoveries
+    recentRecoveries,
+    recentActivity,
+    totalCustomers
   ] = await Promise.all([
-    // 1. Recovered Revenue
     prisma.recovery.aggregate({
       _sum: { amount: true },
       where: { userId: session.user.id, status: 'RECOVERED' }
     }),
-    
-    // 2a. Total Recoveries (for rate)
     prisma.recovery.count({
       where: { userId: session.user.id }
     }),
-    
-    // 2b. Successful Recoveries (for rate)
     prisma.recovery.count({
       where: { userId: session.user.id, status: 'RECOVERED' }
     }),
-    
-    // 3. Active Dunning
     prisma.recovery.count({
       where: { userId: session.user.id, status: 'PENDING' }
     }),
-    
-    // 4. Emails Sent
+    prisma.recovery.count({
+      where: { userId: session.user.id, status: 'FAILED' }
+    }),
     prisma.recovery.aggregate({
       _sum: { emailsSent: true },
       where: { userId: session.user.id }
     }),
-    
-    // 5. Recent Recoveries List
     prisma.recovery.findMany({
       where: { userId: session.user.id, status: 'RECOVERED' },
       orderBy: { updatedAt: 'desc' },
       take: 5,
       include: { customer: true }
+    }),
+    prisma.recovery.findMany({
+      where: { userId: session.user.id },
+      orderBy: { updatedAt: 'desc' },
+      take: 8,
+      include: { customer: true }
+    }),
+    prisma.customer.count({
+      where: { userId: session.user.id }
     })
   ]);
 
   const recoveredRevenue = (recoveredResult._sum.amount || 0) / 100;
   const recoveryRate = totalRecoveries > 0 ? Math.round((successfulRecoveries / totalRecoveries) * 100) : 0;
   const totalEmailsSent = emailsSentResult._sum.emailsSent || 0;
-  // -------------------------------
 
   return (
-    <div className="flex flex-col gap-8">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">Overview</h1>
-        <p className="text-muted-foreground">
-          Here&apos;s a summary of your automated recovery campaigns.
-        </p>
+    <div className="flex flex-col gap-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Overview</h1>
+          <p className="text-muted-foreground">
+            Here&apos;s a summary of your automated recovery campaigns.
+          </p>
+        </div>
+        {!isStripeConnected && (
+          <Link href="/api/stripe/connect">
+            <Button className="bg-[#635BFF] hover:bg-[#5851E5] text-white shadow-md">
+              Connect Stripe to Get Started
+            </Button>
+          </Link>
+        )}
       </div>
 
       {/* Stats Cards */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Recovered Revenue</CardTitle>
@@ -98,7 +110,7 @@ export default async function DashboardPage() {
          <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Recovery Rate</CardTitle>
-            <Activity className="h-4 w-4 text-muted-foreground" />
+            <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{isStripeConnected ? `${recoveryRate}%` : "—"}</div>
@@ -108,7 +120,7 @@ export default async function DashboardPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Active Dunning</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
+            <Clock className="h-4 w-4 text-amber-500" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{isStripeConnected ? activeDunning.toString() : "—"}</div>
@@ -118,7 +130,7 @@ export default async function DashboardPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Emails Sent</CardTitle>
-            <ArrowUpRight className="h-4 w-4 text-muted-foreground" />
+            <Mail className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{isStripeConnected ? totalEmailsSent.toString() : "—"}</div>
@@ -127,22 +139,72 @@ export default async function DashboardPage() {
         </Card>
       </div>
 
+      {/* Quick Stats Bar */}
+      {isStripeConnected && totalRecoveries > 0 && (
+        <Card>
+          <CardContent className="py-4">
+            <div className="flex items-center justify-between text-sm">
+              <div className="flex items-center gap-6 flex-wrap">
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 rounded-full bg-emerald-500"></div>
+                  <span className="text-muted-foreground">Recovered:</span>
+                  <span className="font-semibold">{successfulRecoveries}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 rounded-full bg-amber-500"></div>
+                  <span className="text-muted-foreground">Pending:</span>
+                  <span className="font-semibold">{activeDunning}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                  <span className="text-muted-foreground">Failed:</span>
+                  <span className="font-semibold">{failedRecoveries}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Users className="h-3.5 w-3.5 text-muted-foreground" />
+                  <span className="text-muted-foreground">Customers:</span>
+                  <span className="font-semibold">{totalCustomers}</span>
+                </div>
+              </div>
+              <Link href="/dashboard/recoveries">
+                <Button variant="ghost" size="sm" className="text-xs">View All →</Button>
+              </Link>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-        <Card className="col-span-4">
+        {/* Recent Recoveries Table */}
+        <Card className="lg:col-span-4">
           <CardHeader>
-            <CardTitle>Recent Recoveries</CardTitle>
-            <CardDescription>
-              Payments that were successfully recovered.
-            </CardDescription>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle>Recent Recoveries</CardTitle>
+                <CardDescription>
+                  Payments that were successfully recovered.
+                </CardDescription>
+              </div>
+              {recentRecoveries.length > 0 && (
+                <Link href="/dashboard/recoveries">
+                  <Button variant="outline" size="sm">View All</Button>
+                </Link>
+              )}
+            </div>
           </CardHeader>
           <CardContent>
             {!isStripeConnected ? (
-                <div className="text-sm text-muted-foreground py-8 text-center border border-dashed rounded-lg">
-                Connect your Stripe account to see recoveries.
+              <div className="flex flex-col items-center justify-center py-12 text-center border border-dashed rounded-lg">
+                <DollarSign className="h-10 w-10 text-zinc-300 dark:text-zinc-700 mb-3" />
+                <p className="text-sm text-muted-foreground mb-4">Connect your Stripe account to see recoveries.</p>
+                <Link href="/api/stripe/connect">
+                  <Button className="bg-[#635BFF] hover:bg-[#5851E5] text-white text-sm">Connect Stripe</Button>
+                </Link>
               </div>
             ) : recentRecoveries.length === 0 ? (
-              <div className="text-sm text-muted-foreground py-8 text-center border border-dashed rounded-lg">
-                No recoveries yet. We are actively listening for failed payments.
+              <div className="flex flex-col items-center justify-center py-12 text-center border border-dashed rounded-lg">
+                <Activity className="h-10 w-10 text-zinc-300 dark:text-zinc-700 mb-3" />
+                <p className="text-sm text-muted-foreground">No recoveries yet. We are actively listening for failed payments.</p>
               </div>
             ) : (
                <Table>
@@ -156,13 +218,14 @@ export default async function DashboardPage() {
                 <TableBody>
                   {recentRecoveries.map((rec) => (
                     <TableRow key={rec.id}>
-                      <TableCell className="font-medium">
-                        {rec.customer?.email}
-                      </TableCell>
                       <TableCell>
-                         ${(rec.amount / 100).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        <div className="font-medium">{rec.customer?.name || "Unknown"}</div>
+                        <div className="text-xs text-muted-foreground">{rec.customer?.email}</div>
                       </TableCell>
-                      <TableCell className="text-right">
+                      <TableCell className="font-semibold text-emerald-600 dark:text-emerald-400">
+                         +${(rec.amount / 100).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      </TableCell>
+                      <TableCell className="text-right text-sm text-muted-foreground">
                         {new Date(rec.updatedAt).toLocaleDateString()}
                       </TableCell>
                     </TableRow>
@@ -173,47 +236,102 @@ export default async function DashboardPage() {
           </CardContent>
         </Card>
         
-        <Card className="col-span-3">
-          <CardHeader>
-            <CardTitle>Stripe Integration</CardTitle>
-            <CardDescription>
-              Manage your connection to Stripe.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="flex flex-col gap-4">
-              {isStripeConnected ? (
-                <div className="rounded-md border border-emerald-200 bg-emerald-50 p-6 flex flex-col items-center justify-center text-center">
-                  <div className="rounded-full bg-emerald-100 p-3 mb-4">
-                    <CheckCircle2 className="h-6 w-6 text-emerald-600" />
-                  </div>
-                  <h3 className="font-semibold text-emerald-900 mb-1">Stripe Connected</h3>
-                  <p className="text-sm text-emerald-700 mb-4">
-                    Account ID: ...{user?.stripeConnectId?.slice(-6)}
-                  </p>
-                  <Button variant="outline" className="w-full text-emerald-700 hover:text-emerald-800 border-emerald-300 hover:bg-emerald-100 transition-colors">
-                    Manage Connection
-                  </Button>
+        {/* Activity Feed + Stripe Card */}
+        <div className="lg:col-span-3 flex flex-col gap-4">
+          {/* Activity Timeline */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Recent Activity</CardTitle>
+              <CardDescription>Latest events from your recovery campaigns.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {!isStripeConnected || recentActivity.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-8 text-center">
+                  <Clock className="h-8 w-8 text-zinc-300 dark:text-zinc-700 mb-2" />
+                  <p className="text-sm text-muted-foreground">No activity yet.</p>
                 </div>
               ) : (
-                <div className="rounded-md border border-dashed border-zinc-300 bg-white p-6 flex flex-col items-center justify-center text-center shadow-sm">
-                  <div className="rounded-full bg-[#635BFF]/10 p-3 mb-4">
-                    <DollarSign className="h-6 w-6 text-[#635BFF]" />
-                  </div>
-                  <h3 className="font-semibold text-zinc-900 mb-2 text-lg">Connect Your Stripe</h3>
-                  <p className="text-sm text-zinc-500 mb-6 leading-relaxed">
-                    We securely connect to your Stripe account to detect failed payments and send smart recovery emails on your behalf.
-                  </p>
-                  <Link href="/api/stripe/connect" className="w-full">
-                    <Button className="w-full bg-[#635BFF] hover:bg-[#5851E5] text-white shadow-md shadow-[#635BFF]/20 transition-all font-medium h-11">
-                      Connect with Stripe
-                    </Button>
-                  </Link>
+                <div className="space-y-4">
+                  {recentActivity.slice(0, 6).map((item, i) => (
+                    <div key={item.id} className="flex gap-3">
+                      <div className="flex flex-col items-center">
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
+                          item.status === 'RECOVERED' ? 'bg-emerald-100 dark:bg-emerald-900/30' :
+                          item.status === 'PENDING' ? 'bg-amber-100 dark:bg-amber-900/30' :
+                          'bg-red-100 dark:bg-red-900/30'
+                        }`}>
+                          {item.status === 'RECOVERED' ? (
+                            <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+                          ) : item.status === 'PENDING' ? (
+                            <Clock className="h-4 w-4 text-amber-600 dark:text-amber-400" />
+                          ) : (
+                            <AlertTriangle className="h-4 w-4 text-red-600 dark:text-red-400" />
+                          )}
+                        </div>
+                        {i < Math.min(recentActivity.length, 6) - 1 && (
+                          <div className="w-px h-full bg-zinc-200 dark:bg-zinc-800 min-h-[16px]"></div>
+                        )}
+                      </div>
+                      <div className="pb-4">
+                        <p className="text-sm font-medium">
+                          {item.status === 'RECOVERED' ? 'Payment recovered' :
+                           item.status === 'PENDING' ? 'Recovery started' : 'Recovery failed'}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          {item.customer?.email} — ${(item.amount / 100).toFixed(2)}
+                        </p>
+                        <p className="text-xs text-muted-foreground mt-0.5">
+                          {new Date(item.updatedAt).toLocaleDateString()} · {item.emailsSent} email{item.emailsSent !== 1 ? 's' : ''} sent
+                        </p>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               )}
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+
+          {/* Stripe Connection */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Stripe Integration</CardTitle>
+              <CardDescription>
+                Manage your connection to Stripe.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex flex-col gap-4">
+                {isStripeConnected ? (
+                  <div className="rounded-lg border border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-900/20 p-5 flex flex-col items-center justify-center text-center">
+                    <div className="rounded-full bg-emerald-100 dark:bg-emerald-900/40 p-3 mb-3">
+                      <CheckCircle2 className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />
+                    </div>
+                    <h3 className="font-semibold text-emerald-900 dark:text-emerald-100 mb-1">Stripe Connected</h3>
+                    <p className="text-sm text-emerald-700 dark:text-emerald-300 mb-3">
+                      Account: ...{user?.stripeConnectId?.slice(-6)}
+                    </p>
+                    <Badge className="bg-emerald-200 text-emerald-800 dark:bg-emerald-800 dark:text-emerald-200 border-0">Active</Badge>
+                  </div>
+                ) : (
+                  <div className="rounded-lg border border-dashed border-zinc-300 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-900 p-6 flex flex-col items-center justify-center text-center">
+                    <div className="rounded-full bg-[#635BFF]/10 p-3 mb-4">
+                      <DollarSign className="h-6 w-6 text-[#635BFF]" />
+                    </div>
+                    <h3 className="font-semibold mb-2 text-lg">Connect Your Stripe</h3>
+                    <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
+                      Securely connect your Stripe account to detect failed payments and send smart recovery emails.
+                    </p>
+                    <Link href="/api/stripe/connect" className="w-full">
+                      <Button className="w-full bg-[#635BFF] hover:bg-[#5851E5] text-white shadow-md shadow-[#635BFF]/20 transition-all font-medium h-11">
+                        Connect with Stripe
+                      </Button>
+                    </Link>
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   );

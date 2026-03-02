@@ -1,24 +1,10 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
-import { Activity, CheckCircle2, Clock, XCircle, Mail } from "lucide-react";
+import { Activity, CheckCircle2, Clock, XCircle } from "lucide-react";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth/options";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
-
-function StatusBadge({ status }: { status: string }) {
-  switch (status) {
-    case "RECOVERED":
-      return <Badge className="bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 hover:bg-emerald-100 border-0">Recovered</Badge>;
-    case "PENDING":
-      return <Badge className="bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 hover:bg-amber-100 border-0">Pending</Badge>;
-    case "FAILED":
-      return <Badge className="bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 hover:bg-red-100 border-0">Failed</Badge>;
-    default:
-      return <Badge variant="outline">{status}</Badge>;
-  }
-}
+import { RecoveriesTable } from "@/components/dashboard/recoveries-table";
 
 export default async function RecoveriesPage() {
   const session = await getServerSession(authOptions);
@@ -41,6 +27,16 @@ export default async function RecoveriesPage() {
   ]);
 
   const recoveredRevenue = (totalRecoveredAmount._sum.amount || 0) / 100;
+
+  // Serialize dates for client component
+  const serializedRecoveries = recoveries.map((r) => ({
+    id: r.id,
+    status: r.status,
+    amount: r.amount,
+    emailsSent: r.emailsSent,
+    createdAt: r.createdAt.toISOString(),
+    customer: r.customer ? { name: r.customer.name, email: r.customer.email } : null,
+  }));
 
   return (
     <div className="flex flex-col gap-6">
@@ -92,12 +88,12 @@ export default async function RecoveriesPage() {
         </Card>
       </div>
 
-      {/* Data Table */}
+      {/* Data Table with Search/Filter */}
       <Card>
         <CardHeader>
           <CardTitle>All Recovery Attempts</CardTitle>
           <CardDescription>
-            A complete log of every failed payment and its current recovery status.
+            Search and filter through every failed payment and its recovery status.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -110,41 +106,7 @@ export default async function RecoveriesPage() {
               </p>
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Customer</TableHead>
-                    <TableHead>Amount</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead className="hidden sm:table-cell">
-                      <div className="flex items-center gap-1"><Mail className="h-3 w-3" /> Emails</div>
-                    </TableHead>
-                    <TableHead className="text-right">Date</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {recoveries.map((rec) => (
-                    <TableRow key={rec.id}>
-                      <TableCell>
-                        <div className="font-medium">{rec.customer?.name || "Unknown"}</div>
-                        <div className="text-xs text-muted-foreground">{rec.customer?.email}</div>
-                      </TableCell>
-                      <TableCell className="font-semibold">
-                        ${(rec.amount / 100).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                      </TableCell>
-                      <TableCell>
-                        <StatusBadge status={rec.status} />
-                      </TableCell>
-                      <TableCell className="hidden sm:table-cell">{rec.emailsSent}</TableCell>
-                      <TableCell className="text-right text-sm text-muted-foreground">
-                        {new Date(rec.createdAt).toLocaleDateString()}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
+            <RecoveriesTable recoveries={serializedRecoveries} />
           )}
         </CardContent>
       </Card>

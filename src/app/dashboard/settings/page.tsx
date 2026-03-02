@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { User, CreditCard, Shield, LogOut, CheckCircle2, DollarSign, Calendar, Mail } from "lucide-react";
+import { User, CreditCard, Shield, LogOut, CheckCircle2, DollarSign, Calendar, Mail, Bell, FileText } from "lucide-react";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth/options";
 import { prisma } from "@/lib/prisma";
@@ -140,6 +140,98 @@ export default async function SettingsPage() {
               </Link>
             </div>
           )}
+        </CardContent>
+      </Card>
+
+      {/* Notification Preferences */}
+      <Card>
+        <CardHeader>
+          <div className="flex items-center gap-2">
+            <Bell className="h-5 w-5 text-muted-foreground" />
+            <CardTitle>Notifications</CardTitle>
+          </div>
+          <CardDescription>Choose how you want to be notified about recovery events.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            <div className="flex items-center justify-between py-3 border-b border-zinc-100 dark:border-zinc-800">
+              <div>
+                <p className="text-sm font-medium">Payment Failed Alerts</p>
+                <p className="text-xs text-muted-foreground">Get notified when a customer&apos;s payment fails.</p>
+              </div>
+              <Badge className="bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 border-0">Enabled</Badge>
+            </div>
+            <div className="flex items-center justify-between py-3 border-b border-zinc-100 dark:border-zinc-800">
+              <div>
+                <p className="text-sm font-medium">Recovery Success</p>
+                <p className="text-xs text-muted-foreground">Get notified when a payment is successfully recovered.</p>
+              </div>
+              <Badge className="bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 border-0">Enabled</Badge>
+            </div>
+            <div className="flex items-center justify-between py-3 border-b border-zinc-100 dark:border-zinc-800">
+              <div>
+                <p className="text-sm font-medium">Weekly Summary</p>
+                <p className="text-xs text-muted-foreground">Receive a weekly digest of your recovery performance.</p>
+              </div>
+              <Badge variant="outline" className="text-zinc-500">Disabled</Badge>
+            </div>
+            <div className="flex items-center justify-between py-3">
+              <div>
+                <p className="text-sm font-medium">Marketing Updates</p>
+                <p className="text-xs text-muted-foreground">Product updates and feature announcements.</p>
+              </div>
+              <Badge variant="outline" className="text-zinc-500">Disabled</Badge>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Email Template Preview */}
+      <Card>
+        <CardHeader>
+          <div className="flex items-center gap-2">
+            <FileText className="h-5 w-5 text-muted-foreground" />
+            <CardTitle>Recovery Email Template</CardTitle>
+          </div>
+          <CardDescription>Preview the email your customers receive when their payment fails.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden">
+            {/* Email Header */}
+            <div className="bg-indigo-600 px-6 py-4">
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 rounded bg-white/20 flex items-center justify-center">
+                  <span className="text-white text-xs font-bold">R</span>
+                </div>
+                <span className="text-white font-semibold text-sm">Your Company</span>
+              </div>
+            </div>
+            {/* Email Body */}
+            <div className="p-6 space-y-4">
+              <div>
+                <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-1">To: customer@example.com</p>
+                <p className="font-semibold text-zinc-900 dark:text-zinc-100">Action Required: Update Your Payment Method</p>
+              </div>
+              <div className="text-sm text-zinc-600 dark:text-zinc-300 space-y-3 leading-relaxed">
+                <p>Hi <span className="font-medium text-zinc-900 dark:text-zinc-100">{'{{customer_name}}'}</span>,</p>
+                <p>We noticed that your recent payment of <span className="font-semibold text-indigo-600 dark:text-indigo-400">{'{{amount}}'}</span> was unsuccessful. This can happen when a card expires or has insufficient funds.</p>
+                <p>To ensure uninterrupted access to your subscription, please update your payment information:</p>
+              </div>
+              <div className="pt-2">
+                <div className="inline-flex items-center justify-center rounded-lg bg-indigo-600 px-6 py-2.5 text-sm font-medium text-white cursor-default">
+                  Update Payment Method →
+                </div>
+              </div>
+              <div className="text-xs text-zinc-400 dark:text-zinc-500 pt-4 border-t border-zinc-100 dark:border-zinc-800">
+                <p>This is an automated email from Retain.io on behalf of Your Company.</p>
+                <p className="mt-1">If you believe this is an error, please contact support.</p>
+              </div>
+            </div>
+          </div>
+          <p className="text-xs text-muted-foreground mt-3 flex items-center gap-1.5">
+            <Mail className="h-3 w-3" />
+            Custom email templates are coming soon. This is the default template used for all recovery emails.
+          </p>
         </CardContent>
       </Card>
 
